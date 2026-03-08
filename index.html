@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Drawing Quiz - 100 Questions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+        }
+
+        body {
+            font-family: 'Chakra Petch', sans-serif;
+            background-color: var(--bg);
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 800px; width: 100%; }
+
+        .header { text-align: center; margin-bottom: 20px; }
+
+        .card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .options-grid { display: grid; gap: 12px; }
+
+        .option-btn {
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            text-align: left;
+            font-size: 1.05rem;
+            font-family: inherit;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--primary);
+            background-color: #f8fafc;
+        }
+
+        .option-btn.correct {
+            background-color: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .option-btn.wrong {
+            background-color: #fee2e2 !important;
+            border-color: var(--danger) !important;
+            color: #991b1b;
+        }
+
+        .option-btn.disabled { cursor: default; pointer-events: none; }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #eff6ff;
+            border-left: 5px solid var(--primary);
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .btn-nav {
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Engineering Drawing Quiz</h1>
+        <p>โหมดเรียนรู้: เฉลยทันที (100 ข้อ)</p>
+    </div>
+
+    <div class="status">
+        <span id="q-count">ข้อที่ 1 / 100</span>
+        <span id="score-count">คะแนน: 0</span>
+    </div>
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+
+    <div class="card">
+        <div id="question-text" class="question-text">กำลังโหลดโจทย์...</div>
+        <div id="options-container" class="options-grid"></div>
+        <div id="explanation" class="explanation"></div>
+
+        <div class="controls">
+            <button id="prev-btn" class="btn-nav" onclick="changeQ(-1)" disabled>ก่อนหน้า</button>
+            <button id="next-btn" class="btn-nav" onclick="changeQ(1)">ถัดไป</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const allQuestions = [
+        // หมวด 1: พื้นฐานและการสเก็ตภาพ (1-10)
+        { q: "ข้อใดไม่ถูกต้องของการเขียนแบบด้วยมือเปล่า (Freehand Sketching)", options: ["เขียนได้อย่างรวดเร็ว", "ใช้อุปกรณ์น้อย", "ได้มาตราส่วนที่แน่นอน", "สื่อสารแนวคิดได้ดี"], correct: 2 },
+        { q: "การเขียนเส้นตรงด้วยมือเปล่าให้ตรง มีหลักการอย่างไร", options: ["สายตามองตามปลายดินสอ", "ลากช้าๆ และจับดินสอให้แน่น", "จุดจุดเริ่มและจุดจบแล้วสายตามองที่จุดหมาย", "แบ่งเส้นลากเป็นเส้นสั้นๆ ต่อกัน"], correct: 2 },
+        { q: "วัตถุประสงค์ที่สำคัญที่สุดของการสเก็ตภาพคือข้อใด", options: ["ภาพสวยงาม", "ขนาดถูกต้องแม่นยำ", "นำเสนอแนวคิดได้อย่างรวดเร็ว", "เส้นคมชัดสม่ำเสมอ"], correct: 2 },
+        { q: "อุปกรณ์ใดไม่จำเป็นในการสเก็ตภาพมือเปล่า", options: ["ดินสอ", "ยางลบ", "กระดาษ", "ไม้บรรทัด"], correct: 3 },
+        { q: "การสเก็ตภาพวงกลมควรเริ่มจากสิ่งใด", options: ["ลากเส้นรอบวงทันที", "สร้างโครงสี่เหลี่ยมจัตุรัสและเส้นแกน", "ใช้เหรียญวางทาบ", "ลากเส้นทแยงมุม"], correct: 1 },
+        { q: "เส้นร่าง (Construction line) ควรมีลักษณะอย่างไร", options: ["เส้นเต็มหนา", "เส้นประ", "เส้นเต็มบางและจาง", "เส้นลูกโซ่"], correct: 2 },
+        { q: "การจับดินสอขณะสเก็ตภาพควรจับอย่างไร", options: ["จับให้ใกล้ปลายที่สุด", "จับห่างจากปลายดินสอมากกว่าปกติเล็กน้อย", "จับให้แน่นที่สุด", "จับด้วยนิ้วชี้นิ้วเดียว"], correct: 1 },
+        { q: "ข้อใดคือประโยชน์ของ Grid Paper ในงานสเก็ต", options: ["ช่วยในการกะระยะและสัดส่วน", "ทำให้ภาพสวยขึ้น", "ไม่ต้องใช้ยางลบ", "ช่วยประหยัดน้ำหมึก"], correct: 0 },
+        { q: "การสเก็ตภาพส่วนโค้งนิยมใช้วิธีใด", options: ["วิธีจุดไข่ปลา", "วิธีลากยาวครั้งเดียว", "วิธีขีดทำเครื่องหมายรัศมีหลายๆ จุด", "วิธีใช้สายวัด"], correct: 2 },
+        { q: "ภาพสเก็ตที่ดีควรมีลักษณะอย่างไร", options: ["เหมือนภาพถ่าย", "มีขนาดใหญ่เท่าของจริง", "สัดส่วนใกล้เคียงและสื่อสารชัดเจน", "ใช้สีสันครบถ้วน"], correct: 2 },
+
+        // หมวด 2: อุปกรณ์ มาตรฐานเส้น และตัวอักษร (11-30)
+        { q: "ดินสอเบอร์ใดมีความแข็ง (Hard) มากที่สุด", options: ["HB", "B", "2H", "4H"], correct: 3 },
+        { q: "เส้นเต็มหนา (Thick continuous line) ใช้สำหรับงานใด", options: ["เส้นช่วยบอกขนาด", "เส้นขอบรูปที่มองเห็น", "เส้นประ", "เส้นศูนย์กลาง"], correct: 1 },
+        { q: "เส้นลูกโซ่บาง (Thin chain line) ใช้สำหรับงานใด", options: ["เส้นขอบรูป", "เส้นประ", "เส้นศูนย์กลาง", "เส้นลายตัด"], correct: 2 },
+        { q: "ขนาดกระดาษ A3 มีพื้นที่เป็นกี่เท่าของ A4", options: ["1.5 เท่า", "2 เท่า", "3 เท่า", "4 เท่า"], correct: 1 },
+        { q: "กระดาษขนาดใดมีขนาดใหญ่ที่สุด", options: ["A0", "A1", "A2", "A3"], correct: 0 },
+        { q: "ความกว้างต่อความสูงของหัวลูกศรบอกขนาดคือเท่าใด", options: ["1:1", "1:2", "1:3", "1:5"], correct: 2 },
+        { q: "ตัวอักษรในงานเขียนแบบวิศวกรรมนิยมเอียงกี่องศา (ถ้าเป็นตัวเอียง)", options: ["45 องศา", "60 องศา", "75 องศา", "90 องศา"], correct: 2 },
+        { q: "เส้นประ (Hidden line) มีความหนาประมาณเท่าใดเมื่อเทียบกับเส้นเต็มหนา", options: ["เท่ากัน", "ครึ่งหนึ่ง", "หนึ่งในสาม", "สองเท่า"], correct: 1 },
+        { q: "ไม้ที (T-Square) ใช้สำหรับลากเส้นในแนวใด", options: ["แนวตั้ง", "แนวนอน", "แนวเอียง 45 องศา", "แนวโค้ง"], correct: 1 },
+        { q: "สัญลักษณ์ ⌀ ใช้แทนค่าใด", options: ["รัศมี", "ความยาว", "เส้นผ่านศูนย์กลาง", "มุม"], correct: 2 },
+        { q: "สัญลักษณ์ R ใช้แทนค่าใด", options: ["รัศมี", "ความหนา", "ความกว้าง", "ความลึก"], correct: 0 },
+        { q: "มาตรฐานกระดาษ ISO A-Series อิงจากพื้นที่ขนาดใดเป็นหลัก", options: ["A0 = 1 ตารางเมตร", "A0 = 1 ตารางฟุต", "A4 = 1 ตารางเมตร", "A1 = 1 ตารางเมตร"], correct: 0 },
+        { q: "เส้นเต็มบางนิยมใช้เขียนสิ่งใด", options: ["ขอบรูป", "เส้นช่วยบอกขนาด", "เส้นขอบที่ถูกบัง", "เส้นระนาบตัด"], correct: 1 },
+        { q: "ยางลบที่ดีสำหรับงานเขียนแบบควรเป็นอย่างไร", options: ["แข็งและหยาบ", "นิ่มและไม่ทำให้กระดาษเป็นขุย", "มีกลิ่นหอม", "ลบออกยาก"], correct: 1 },
+        { q: "มุมของสามเหลี่ยมเขียนแบบ (Set Square) ชุดมาตรฐานคือข้อใด", options: ["30, 60, 90 และ 45, 45, 90", "15, 75, 90", "20, 70, 90", "ทุกมุมเท่ากัน"], correct: 0 },
+        { q: "เส้นลายตัด (Section line) ควรใช้เส้นชนิดใด", options: ["เส้นเต็มหนา", "เส้นเต็มบาง", "เส้นประ", "เส้นลูกโซ่"], correct: 1 },
+        { q: "ความสูงของตัวเลขบอกขนาดมาตรฐานมักเริ่มที่กี่มม.", options: ["1.5 มม.", "2.5 หรือ 3.5 มม.", "5.0 มม.", "10 มม."], correct: 1 },
+        { q: "ขอบกระดาษด้านที่ใช้เย็บเล่ม (Margin) ควรเว้นห่างกี่มม.", options: ["5 มม.", "10 มม.", "20-25 มม.", "50 มม."], correct: 2 },
+        { q: "เส้นมือเปล่าบางหยัก (Continuous thin freehand line) ใช้เป็นเส้นอะไร", options: ["เส้นศูนย์กลาง", "เส้นขอบรูป", "เส้นรอยตัดตอน (Break line)", "เส้นช่วยบอกขนาด"], correct: 2 },
+        { q: "หัวดินสอแบบ Chisel point เหมาะสำหรับลากเส้นชนิดใด", options: ["เส้นร่าง", "เส้นเต็มหนา", "เขียนตัวอักษร", "วาดส่วนโค้ง"], correct: 1 },
+
+        // หมวด 3: มาตราส่วนและการให้ขนาด (31-50)
+        { q: "มาตราส่วน 2:1 คือมาตราส่วนประเภทใด", options: ["มาตราส่วนย่อ", "มาตราส่วนขยาย", "มาตราส่วนเท่าจริง", "มาตราส่วนผิด"], correct: 1 },
+        { q: "มาตราส่วน 1:50 หมายความว่าอย่างไร", options: ["ของจริงใหญ่กว่าในแบบ 50 เท่า", "ในแบบใหญ่กว่าของจริง 50 เท่า", "ในแบบเท่ากับของจริง", "ย่อลง 1.5 เท่า"], correct: 0 },
+        { q: "การให้ขนาดรูเจาะที่ซ้ำกัน 4 รู ควรเขียนอย่างไร", options: ["บอกขนาดทุกรู", "4 x ⌀10", "⌀10 x 4", "4 + ⌀10"], correct: 1 },
+        { q: "เส้นช่วยบอกขนาด (Extension line) ควรห่างจากขอบรูปเล็กน้อยประมาณเท่าใด", options: ["0 มม.", "1-2 มม.", "5 มม.", "10 มม."], correct: 1 },
+        { q: "ตัวเลขบอกขนาดในระบบ Aligned ควรวางอย่างไร", options: ["วางใต้เส้นบอกขนาด", "วางเหนือเส้นบอกขนาด", "วางทับเส้นบอกขนาด", "วางด้านข้าง"], correct: 1 },
+        { q: "สัญลักษณ์ SR หมายถึงอะไร", options: ["รัศมีเส้นโค้ง", "รัศมีทรงกลม", "เส้นผ่านศูนย์กลางทรงกลม", "ผิวเรียบ"], correct: 1 },
+        { q: "การให้ขนาดมุมใช้หน่วยใดเป็นหลัก", options: ["เรเดียน", "มิลลิเมตร", "องศา", "เปอร์เซ็นต์"], correct: 2 },
+        { q: "สัญลักษณ์ □ นำหน้าตัวเลขหมายถึงรูปทรงใด", options: ["วงกลม", "สามเหลี่ยม", "สี่เหลี่ยมจัตุรัส", "หกเหลี่ยม"], correct: 2 },
+        { q: "การให้ขนาดในพื้นที่แคบที่ไม่สามารถวางหัวลูกศรได้ ควรทำอย่างไร", options: ["ไม่ต้องให้ขนาด", "ขยายภาพ", "วางหัวลูกศรไว้ด้านนอกชี้เข้ามา", "ใช้เส้นประแทน"], correct: 2 },
+        { q: "เส้นบอกขนาดไม่ควรตัดกับเส้นใดมากที่สุด", options: ["เส้นเต็มบาง", "เส้นช่วยบอกขนาด", "เส้นศูนย์กลาง", "เส้นลายตัด"], correct: 1 },
+        { q: "การให้ขนาดความยาวรวมควรวางไว้ที่ใด", options: ["ใกล้ขอบรูปที่สุด", "อยู่นอกสุดของกลุ่มเส้นบอกขนาด", "วางใน Title Block", "วางทับภาพฉาย"], correct: 1 },
+        { q: "สัญลักษณ์ t=5 หมายถึงอะไร", options: ["เวลา 5 วินาที", "ความหนา 5 หน่วย", "อุณหภูมิ 5 องศา", "ความโต 5 หน่วย"], correct: 1 },
+        { q: "การให้ขนาดแบบต่อเนื่อง (Chain Dimensioning) มีข้อเสียอย่างไร", options: ["อ่านยาก", "เขียนยาก", "เกิดการสะสมความคลาดเคลื่อน", "เปลืองพื้นที่"], correct: 2 },
+        { q: "มาตราส่วนใดต่อไปนี้ไม่ใช่มาตราส่วนมาตรฐาน", options: ["1:2", "1:3", "1:5", "1:10"], correct: 1 },
+        { q: "หน่วยวัดมาตรฐานในแบบวิศวกรรมเครื่องกลไทยคือหน่วยใด", options: ["นิ้ว", "เซนติเมตร", "มิลลิเมตร", "เมตร"], correct: 2 },
+        { q: "สัญลักษณ์ ⌀10 Depth 15 หมายถึงรูเจาะลักษณะใด", options: ["รูทะลุ", "รูไม่ทะลุลึก 15 มม.", "รูคว้านปาก", "รูเกลียว"], correct: 1 },
+        { q: "เส้น Leader line นิยมทำมุมกี่องศา", options: ["0", "90", "45 หรือ 60", "30 หรือ 45"], correct: 3 },
+        { q: "การให้ขนาดความโตของรูเจาะควรให้ในภาพใด", options: ["ภาพที่เห็นรูเป็นวงกลม", "ภาพที่เห็นรูเป็นเส้นประ", "ภาพตัด", "ภาพด้านข้าง"], correct: 0 },
+        { q: "การให้ขนาดแบบพิกัด (Coordinate Dimensioning) นิยมใช้กับงานใด", options: ["งานกลึง", "งานเจาะรูจำนวนมากบนแผ่นงาน", "งานสเก็ต", "งานเชื่อม"], correct: 1 },
+        { q: "ตัวเลขบอกขนาดควรหันหัวไปทางทิศใดเมื่ออ่านจากด้านขวาของแบบ", options: ["ซ้าย", "ขวา", "บน", "ล่าง"], correct: 0 },
+
+        // หมวด 4: การฉายภาพ (Orthographic & Pictorial) (51-80)
+        { q: "ภาพฉายระบบมุมที่ 1 (First Angle) วางภาพด้านบนไว้ที่ใด", options: ["เหนือภาพด้านหน้า", "ใต้ภาพด้านหน้า", "ซ้ายของภาพด้านหน้า", "ขวาของภาพด้านหน้า"], correct: 1 },
+        { q: "สัญลักษณ์รูปกรวยตัดกับวงกลมโดยวงกลมอยู่ทางขวาคือระบบใด", options: ["มุมที่ 1", "มุมที่ 2", "มุมที่ 3", "มุมที่ 4"], correct: 0 },
+        { q: "ภาพไอโซเมตริก (Isometric) แกนทำมุมเอียงกี่องศากับแนวระดับ", options: ["15 องศา", "30 องศา", "45 องศา", "60 องศา"], correct: 1 },
+        { q: "ภาพออบลีก (Oblique) แกนลึกนิยมเอียงกี่องศา", options: ["30", "45", "60", "90"], correct: 1 },
+        { q: "ภาพฉาย Orthographic โดยปกติจะใช้กี่ด้านจึงจะสมบูรณ์", options: ["1 ด้าน", "2 ด้าน", "3 ด้าน", "6 ด้าน"], correct: 2 },
+        { q: "การเลือกภาพด้านหน้า (Front View) ควรพิจารณาจากสิ่งใด", options: ["ด้านที่กว้างที่สุด", "ด้านที่เห็นรายละเอียดมากที่สุด", "ด้านที่สั้นที่สุด", "ด้านบนเสมอ"], correct: 1 },
+        { q: "ภาพ Cavalier Oblique ให้มาตราส่วนแกนลึกเท่าใด", options: ["1:1", "1:2", "2:1", "1:5"], correct: 0 },
+        { q: "ภาพ Cabinet Oblique ให้มาตราส่วนแกนลึกเท่าใด", options: ["1:1", "1:2", "2:1", "3:4"], correct: 1 },
+        { q: "ในภาพไอโซเมตริก วงกลมจะปรากฏเป็นรูปทรงใด", options: ["วงกลม", "วงรี", "สี่เหลี่ยม", "พาราโบลา"], correct: 1 },
+        { q: "ภาพฉายมุมที่ 3 (Third Angle) นิยมใช้ในประเทศใด", options: ["เยอรมนี", "ไทย", "สหรัฐอเมริกา", "อังกฤษ"], correct: 2 },
+        { q: "ภาพทัศนียภาพ (Perspective) ต่างจากภาพไอโซเมตริกอย่างไร", options: ["ภาพไอโซสวยกว่า", "ภาพทัศนียภาพมีจุดรวมสายตา", "ภาพไอโซใช้ในงานสถาปัตย์เท่านั้น", "ไม่ต่างกัน"], correct: 1 },
+        { q: "ระนาบระดับ (Horizontal Plane) ใช้รับภาพฉายด้านใด", options: ["ด้านหน้า", "ด้านข้าง", "ด้านบน", "ด้านล่าง"], correct: 2 },
+        { q: "เส้นเอียงในภาพไอโซเมตริกที่ไม่ขนานกับแกนหลักเรียกว่าอะไร", options: ["Isometric line", "Non-isometric line", "Vertical line", "Horizontal line"], correct: 1 },
+        { q: "การเขียนวงรีในไอโซเมตริกนิยมใช้วิธีใดมากที่สุด", options: ["วิธีของพาสคาล", "วิธีสี่ศูนย์กลาง (Four-center method)", "วิธีสุ่มจุด", "วิธีใช้ไม้บรรทัด"], correct: 1 },
+        { q: "ภาพด้านข้างซ้ายในระบบมุมที่ 1 จะวางไว้ที่ใด", options: ["ซ้ายของภาพด้านหน้า", "ขวาของภาพด้านหน้า", "บนของภาพด้านหน้า", "ล่างของภาพด้านหน้า"], correct: 1 },
+        { q: "เส้นประในภาพฉายมีความหมายว่าอย่างไร", options: ["ขอบที่มองเห็น", "ขอบที่โดนบัง", "แกนกลาง", "แนวตัด"], correct: 1 },
+        { q: "หลักการ 'มองด้านไหน วางด้านนั้น' คือระบบมุมที่เท่าใด", options: ["มุมที่ 1", "มุมที่ 2", "มุมที่ 3", "มุมที่ 4"], correct: 2 },
+        { q: "ภาพช่วย (Auxiliary View) ใช้ฉายลงบนระนาบชนิดใด", options: ["ระนาบหลัก", "ระนาบเอียง", "ระนาบระดับ", "ระนาบดิ่ง"], correct: 1 },
+        { q: "หากชิ้นงานเป็นทรงกระบอก ภาพฉายสองด้านที่เพียงพอคือด้านใด", options: ["ด้านหน้าและด้านข้าง", "ด้านหน้าและด้านบน", "ด้านบนและด้านข้าง", "ด้านใดก็ได้ด้านเดียว"], correct: 1 },
+        { q: "เมื่อเส้นขอบรูปทับกับเส้นประ ควรเขียนเส้นใด", options: ["เส้นประ", "เส้นขอบรูป", "เส้นศูนย์กลาง", "เขียนทั้งสองเส้น"], correct: 1 },
+        { q: "การถ่ายขนาดจากภาพด้านบนไปยังภาพด้านข้างนิยมใช้เส้นทำมุมกี่องศา", options: ["30", "45", "60", "90"], correct: 1 },
+        { q: "ภาพ Pictorial ชนิดใดให้ความรู้สึกเหมือนตาเห็นมากที่สุด", options: ["Isometric", "Oblique", "Perspective", "Dimetric"], correct: 2 },
+        { q: "แกนตั้งของภาพไอโซเมตริกทำมุมกี่องศากับแนวระดับ", options: ["30", "45", "60", "90"], correct: 3 },
+        { q: "ภาพฉายที่มองจากระนาบหน้าตรงเรียกว่าระนาบอะไร", options: ["Frontal plane", "Horizontal plane", "Profile plane", "Ground plane"], correct: 0 },
+        { q: "เส้นประยาวและช่องว่างระหว่างเส้นประควรมีความยาวประมาณเท่าใด", options: ["3 มม. และ 1 มม.", "10 มม. และ 5 มม.", "1 มม. และ 1 มม.", "5 มม. และ 5 มม."], correct: 0 },
+        { q: "ภาพฉายที่ขนานกันทุกเส้นเรียกว่าการฉายแบบใด", options: ["Perspective", "Parallel Projection", "Point Projection", "Central Projection"], correct: 1 },
+        { q: "ความกว้างของภาพด้านหน้าต้องเท่ากับความกว้างของภาพใด", options: ["ภาพด้านบน", "ภาพด้านข้าง", "ภาพด้านล่าง", "เท่ากันทุกด้าน"], correct: 0 },
+        { q: "ความสูงของภาพด้านหน้าต้องเท่ากับความสูงของภาพใด", options: ["ภาพด้านบน", "ภาพด้านข้าง", "ภาพด้านหลัง", "ถูกทั้ง ข และ ค"], correct: 3 },
+        { q: "ระบบมุมที่ 1 วัตถุวางอยู่ตำแหน่งใด", options: ["ระหว่างผู้มองกับระนาบ", "หลังระนาบ", "ใต้ระนาบ", "บนระนาบ"], correct: 0 },
+        { q: "สัญลักษณ์ระบบมุมมองมักวางไว้ที่ใดในแบบ", options: ["มุมบนซ้าย", "ใน Title Block", "ใต้ภาพด้านหน้า", "ข้างภาพด้านข้าง"], correct: 1 },
+
+        // หมวด 5: ภาพตัด งานสวม และสัญลักษณ์พิเศษ (81-100)
+        { q: "ภาพตัดเต็ม (Full Section) ใช้ระนาบตัดลักษณะใด", options: ["ตัดผ่านครึ่งหนึ่ง", "ตัดผ่านตลอดแนว", "ตัดเฉพาะจุด", "ตัดย้ายแนว"], correct: 1 },
+        { q: "ชิ้นส่วนใดที่ไม่ควรเขียนเส้นลายตัดแม้จะถูกระนาบตัดผ่าน", options: ["เปลือกนอก", "เพลาตัน", "ฝาสูบ", "ฐานเครื่อง"], correct: 1 },
+        { q: "ภาพตัดครึ่ง (Half Section) แสดงภาพลักษณะใด", options: ["ตัดออกครึ่งหนึ่งของภาพฉาย", "แสดงภายในครึ่งหนึ่งและภายนอกครึ่งหนึ่ง", "ตัด 1 ใน 4 ของวัตถุ", "ถูกทั้ง ก และ ข"], correct: 3 },
+        { q: "เส้นแสดงแนวระนาบตัด (Cutting Plane Line) ใช้เส้นชนิดใด", options: ["เส้นเต็มหนา", "เส้นประ", "เส้นลูกโซ่หนาที่ปลาย", "เส้นร่าง"], correct: 2 },
+        { q: "Offset Section มีลักษณะเด่นอย่างไร", options: ["ตัดเป็นมุมฉาก", "ระนาบตัดหักเลี้ยวเพื่อผ่านรายละเอียดที่ต้องการ", "ตัดเฉพาะจุดเล็กๆ", "ตัดเพียงเสี้ยวเดียว"], correct: 1 },
+        { q: "สัญลักษณ์ H7 ในงานสวม หมายถึงอะไร", options: ["ค่าความโตเพลา", "พิกัดความคลาดเคลื่อนของรูเจาะ", "ชนิดของวัสดุ", "ความแข็ง"], correct: 1 },
+        { q: "การสวมที่เพลาใหญ่กว่ารูเจาะเรียกว่าการสวมแบบใด", options: ["สวมคลอน", "สวมพอดี", "สวมอัด", "สวมหลวม"], correct: 2 },
+        { q: "สัญลักษณ์ Ra 3.2 หมายถึงสิ่งใด", options: ["ความหนาผิว", "ความขรุขระเฉลี่ยของผิว", "รัศมีผิว", "ระยะพิทผิว"], correct: 1 },
+        { q: "เกลียว M10 มีขนาดเส้นผ่านศูนย์กลางโตนอกเท่าใด", options: ["8 มม.", "10 มม.", "12 มม.", "1.5 มม."], correct: 1 },
+        { q: "เส้นลายตัดในภาพประกอบ (Assembly) ของชิ้นส่วนที่ติดกันควรทำอย่างไร", options: ["เอียงทิศเดียวกัน", "เอียงสลับทิศทางกัน", "ไม่ต้องเขียน", "ระบายสีต่างกัน"], correct: 1 },
+        { q: "สัญลักษณ์สามเหลี่ยมบนผิวงาน หมายถึงอะไร", options: ["จุดศูนย์กลาง", "ความเรียบผิว", "ตำแหน่งเชื่อม", "แนวตัด"], correct: 1 },
+        { q: "ภาพระเบิด (Exploded View) มีประโยชน์อย่างไร", options: ["ประหยัดกระดาษ", "แสดงลำดับการประกอบชิ้นส่วน", "แสดงขนาดแม่นยำที่สุด", "ใช้ในขั้นตอนการหล่อ"], correct: 1 },
+        { q: "รายการวัสดุ (Bill of Materials) มักอยู่ตำแหน่งใด", options: ["ซ้ายบน", "ขวาบนของ Title Block", "ใต้ภาพฉาย", "หน้าแรกของเล่ม"], correct: 1 },
+        { q: "สัญลักษณ์สลักเกลียวในภาพตัดควรเขียนลายตัดหรือไม่", options: ["เขียน", "ไม่เขียน", "เขียนเฉพาะหัว", "ระบายดำ"], correct: 1 },
+        { q: "การตัดเฉพาะจุด (Broken-out Section) ใช้เส้นใดล้อมรอบ", options: ["เส้นประ", "เส้นลูกโซ่", "เส้นหยักมือเปล่าบาง", "เส้นเต็มหนา"], correct: 2 },
+        { q: "สัญลักษณ์วงกลมและตัวเลขที่ชี้ไปยังชิ้นส่วนในแบบประกอบเรียกว่าอะไร", options: ["Dimension", "Balloon", "Tag", "Mark"], correct: 1 },
+        { q: "เกลียวชนิดใดใช้ส่งกำลังได้ดีที่สุด", options: ["เกลียวสามเหลี่ยม", "เกลียวสี่เหลี่ยม", "เกลียวฟันเลื่อย", "เกลียวกลม"], correct: 1 },
+        { q: "ค่า Tolerance คืออะไร", options: ["ขนาดที่ต้องการพอดี", "ช่วงของขนาดที่ยอมรับได้", "ความผิดพลาดของเครื่องจักร", "ค่าความแข็ง"], correct: 1 },
+        { q: "มาตราส่วนใน Title Block ระบุเป็น 'NTS' หมายถึงอะไร", options: ["มาตราส่วนจริง", "ไม่ใช้มาตราส่วน (Not to scale)", "มาตราส่วนขยาย", "มาตราส่วนมาตรฐานใหม่"], correct: 1 },
+        { q: "การตรวจสอบแบบครั้งสุดท้ายก่อนใช้งานเรียกว่าอะไร", options: ["Drafting", "Checking", "Sketching", "Modeling"], correct: 1 }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = new Array(allQuestions.length).fill(null);
+
+    function render() {
+        const q = allQuestions[current];
+        document.getElementById('q-count').innerText = `ข้อที่ ${current + 1} / ${allQuestions.length}`;
+        document.getElementById('score-count').innerText = `คะแนน: ${score}`;
+        document.getElementById('question-text').innerText = q.q;
+        document.getElementById('progress-fill').style.width = ((current + 1) / allQuestions.length * 100) + '%';
+        
+        const container = document.getElementById('options-container');
+        const exp = document.getElementById('explanation');
+        container.innerHTML = '';
+        exp.style.display = 'none';
+
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+
+            // ตรวจสอบถ้าเคยตอบแล้ว
+            if (answered[current] !== null) {
+                btn.classList.add('disabled');
+                if (i === q.correct) btn.classList.add('correct');
+                if (i === answered[current] && i !== q.correct) btn.classList.add('wrong');
+                
+                exp.style.display = 'block';
+                exp.innerHTML = `<strong>เฉลย:</strong> ${q.options[q.correct]}`;
+            }
+
+            btn.onclick = () => {
+                if (answered[current] === null) {
+                    answered[current] = i;
+                    if (i === q.correct) score++;
+                    render();
+                }
+            };
+            container.appendChild(btn);
+        });
+
+        document.getElementById('prev-btn').disabled = current === 0;
+    }
+
+    function changeQ(step) {
+        if (current + step >= 0 && current + step < allQuestions.length) {
+            current += step;
+            render();
+        } else if (current + step === allQuestions.length) {
+            alert("จบการทดสอบแล้ว! คะแนนรวมของคุณคือ: " + score);
+        }
+    }
+
+    render();
+</script>
+
+</body>
+</html>
